@@ -8,13 +8,36 @@ plugins {
 
 apply(from = "version.gradle.kts")
 
+gradle.taskGraph.whenReady {
+  allTasks.forEach { task ->
+    if (
+        task.path.contains("jApiCmp", ignoreCase = true)
+        || task.path.contains("test", ignoreCase = true)
+        || task.path.contains("javadoc", ignoreCase = true)
+        || task.path.contains("benchmark", ignoreCase = true)
+        || task.path.contains("checkstyle")
+        || task.path.contains("spotless", ignoreCase = true)
+        || task.path.contains("sourcesJar", ignoreCase = true)
+    ) {
+      println("skipping : ${task.path}")
+      task.enabled = false
+    } else {
+      println("excuting : ${task.path}")
+    }
+  }
+}
+
 nexusPublishing {
   packageGroup.set("io.opentelemetry")
 
   repositories {
-    sonatype {
-      username.set(System.getenv("SONATYPE_USER"))
-      password.set(System.getenv("SONATYPE_KEY"))
+    create("myNexus") {
+      nexusUrl.set(uri("http://zmq:8081/repository/mvn-hosted/"))
+      snapshotRepositoryUrl.set(uri("http://zmq:8081/repository/mvn-hosted/"))
+      username.set(System.getenv("NEXUS_USERNAME"))
+      password.set(System.getenv("NEXUS_PASSWORD"))
+      useStaging.set(false)
+      allowInsecureProtocol.set(true)
     }
   }
 

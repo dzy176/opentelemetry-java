@@ -44,8 +44,14 @@ spotless {
 }
 
 repositories {
-  mavenCentral()
-  gradlePluginPortal()
+  maven {
+    url = uri("http://zmq:8081/repository/mvn-group/")
+    isAllowInsecureProtocol = true
+    credentials {
+      username = (System.getenv("NEXUS_USERNAME"))
+      password = (System.getenv("NEXUS_PASSWORD"))
+    }
+  }
   mavenLocal()
 }
 
