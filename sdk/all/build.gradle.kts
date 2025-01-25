@@ -16,6 +16,7 @@ dependencies {
   api(project(":sdk:trace"))
   api(project(":sdk:metrics"))
   api(project(":sdk:logs"))
+  api(project(":sdk:management"))
 
   annotationProcessor("com.google.auto.value:auto-value")
 

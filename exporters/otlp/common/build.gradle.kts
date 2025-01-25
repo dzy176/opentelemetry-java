@@ -42,6 +42,10 @@ wire {
     "opentelemetry.proto.collector.trace.v1.ExportTraceServiceRequest",
     "opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceRequest",
     "opentelemetry.proto.collector.logs.v1.ExportLogsServiceRequest",
+
+    "opentelemetry.proto.collector.management.v1.ExportHeartbeatServiceRequest",
+    "opentelemetry.proto.collector.management.v1.ImportControlServiceRequest",
+    "opentelemetry.proto.collector.management.v1.ImportControlServiceResponse",
   )
 
   custom {

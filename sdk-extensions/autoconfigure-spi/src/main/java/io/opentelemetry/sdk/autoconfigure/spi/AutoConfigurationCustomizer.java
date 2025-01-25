@@ -9,6 +9,7 @@ import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.logs.LogRecordProcessor;
 import io.opentelemetry.sdk.logs.SdkLoggerProviderBuilder;
 import io.opentelemetry.sdk.logs.export.LogRecordExporter;
+import io.opentelemetry.sdk.management.export.ManagementExporter;
 import io.opentelemetry.sdk.metrics.SdkMeterProviderBuilder;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
 import io.opentelemetry.sdk.metrics.export.MetricReader;
@@ -198,6 +199,12 @@ public interface AutoConfigurationCustomizer {
   default AutoConfigurationCustomizer addLogRecordExporterCustomizer(
       BiFunction<? super LogRecordExporter, ConfigProperties, ? extends LogRecordExporter>
           exporterCustomizer) {
+    return this;
+  }
+
+  default AutoConfigurationCustomizer addManagementExporterCustomizer(
+      BiFunction<? super ManagementExporter, ConfigProperties, ? extends ManagementExporter>
+          managementExporterCustomizer) {
     return this;
   }
 

@@ -24,8 +24,11 @@ import io.opentelemetry.sdk.autoconfigure.spi.internal.DefaultConfigProperties;
 import io.opentelemetry.sdk.logs.LogRecordProcessor;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.logs.SdkLoggerProviderBuilder;
+import io.opentelemetry.sdk.management.SdkManagementProvider;
+import io.opentelemetry.sdk.management.SdkManagementProviderBuilder;
 import io.opentelemetry.sdk.logs.export.LogRecordExporter;
 import io.opentelemetry.sdk.logs.internal.SdkEventLoggerProvider;
+import io.opentelemetry.sdk.management.export.ManagementExporter;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.SdkMeterProviderBuilder;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
@@ -95,6 +98,8 @@ public final class AutoConfiguredOpenTelemetrySdkBuilder implements AutoConfigur
   private BiFunction<? super LogRecordProcessor, ConfigProperties, ? extends LogRecordProcessor>
       logRecordProcessorCustomizer = (a, unused) -> a;
 
+  private BiFunction<? super ManagementExporter, ConfigProperties, ? extends ManagementExporter>
+      managementExporterCustomizer = (a, unused) -> a;
   private BiFunction<? super Resource, ConfigProperties, ? extends Resource> resourceCustomizer =
       (a, unused) -> a;
 
@@ -352,6 +357,17 @@ public final class AutoConfiguredOpenTelemetrySdkBuilder implements AutoConfigur
     return this;
   }
 
+  @Override
+  public AutoConfiguredOpenTelemetrySdkBuilder addManagementExporterCustomizer(
+      BiFunction<? super ManagementExporter, ConfigProperties, ? extends ManagementExporter>
+          managementExporterCustomizer) {
+    requireNonNull(managementExporterCustomizer, "managementExporterCustomizer");
+    this.managementExporterCustomizer =
+        mergeCustomizer(this.managementExporterCustomizer, managementExporterCustomizer);
+    return this;
+  }
+
+
   /**
    * Adds a {@link BiFunction} to invoke for all autoconfigured {@link
    * io.opentelemetry.sdk.logs.LogRecordProcessor}s. The return value of the {@link BiFunction} will
@@ -488,6 +504,18 @@ public final class AutoConfiguredOpenTelemetrySdkBuilder implements AutoConfigur
         SdkLoggerProvider loggerProvider = loggerProviderBuilder.build();
         closeables.add(loggerProvider);
 
+        SdkManagementProviderBuilder sdkManagementProviderBuilder = SdkManagementProvider.builder();
+        sdkManagementProviderBuilder.setResource(resource);
+        ManagementProviderConfiguration.configureManagementProvider(
+            sdkManagementProviderBuilder,
+            config,
+            spiHelper,
+            managementExporterCustomizer,
+            closeables
+        );
+        SdkManagementProvider managementProvider = sdkManagementProviderBuilder.build();
+        closeables.add(managementProvider);
+
         ContextPropagators propagators =
             PropagatorConfiguration.configurePropagators(config, spiHelper, propagatorCustomizer);
 
@@ -495,6 +523,7 @@ public final class AutoConfiguredOpenTelemetrySdkBuilder implements AutoConfigur
             OpenTelemetrySdk.builder()
                 .setTracerProvider(tracerProvider)
                 .setLoggerProvider(loggerProvider)
+                .setManagementProvider(managementProvider)
                 .setMeterProvider(meterProvider)
                 .setPropagators(propagators);
 

@@ -9,6 +9,7 @@ import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.logs.SdkLoggerProviderBuilder;
+import io.opentelemetry.sdk.management.SdkManagementProvider;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
@@ -21,6 +22,7 @@ public final class OpenTelemetrySdkBuilder {
   @Nullable private SdkTracerProvider tracerProvider;
   @Nullable private SdkMeterProvider meterProvider;
   @Nullable private SdkLoggerProvider loggerProvider;
+  @Nullable private SdkManagementProvider managementProvider;
 
   /**
    * Package protected to disallow direct initialization.
@@ -61,6 +63,11 @@ public final class OpenTelemetrySdkBuilder {
    */
   public OpenTelemetrySdkBuilder setLoggerProvider(SdkLoggerProvider loggerProvider) {
     this.loggerProvider = loggerProvider;
+    return this;
+  }
+
+  public OpenTelemetrySdkBuilder setManagementProvider(SdkManagementProvider managementProvider) {
+    this.managementProvider = managementProvider;
     return this;
   }
 

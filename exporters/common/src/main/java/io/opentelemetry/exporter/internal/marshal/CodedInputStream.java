@@ -170,6 +170,10 @@ public final class CodedInputStream {
     return (int) readRawVarint64SlowPath();
   }
 
+  public long readLong() throws IOException {
+    return readRawVarint64SlowPath();
+  }
+
   private long readRawVarint64SlowPath() throws IOException {
     long result = 0;
     for (int shift = 0; shift < 64; shift += 7) {

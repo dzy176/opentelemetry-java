@@ -49,6 +49,7 @@ public final class OtlpConfigUtil {
   public static final String DATA_TYPE_METRICS = "metrics";
   public static final String DATA_TYPE_LOGS = "logs";
 
+  public static final String DATA_TYPE_MANAGEMENT = "management";
   public static final String PROTOCOL_GRPC = "grpc";
   public static final String PROTOCOL_HTTP_PROTOBUF = "http/protobuf";
 

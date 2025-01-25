@@ -19,10 +19,10 @@ gradle.taskGraph.whenReady {
         || task.path.contains("spotless", ignoreCase = true)
         || task.path.contains("sourcesJar", ignoreCase = true)
     ) {
-      println("skipping : ${task.path}")
+//      println("skipping : ${task.path}")
       task.enabled = false
     } else {
-      println("excuting : ${task.path}")
+//      println("excuting : ${task.path}")
     }
   }
 }
